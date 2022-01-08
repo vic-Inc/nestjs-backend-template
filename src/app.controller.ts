@@ -1,10 +1,11 @@
 import { Body, Controller, Get, Param, ParseArrayPipe, ParseBoolPipe, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { SampleDto } from './app.dto';
 import { AppService } from './app.service';
+import { SampleApiProvider } from './http-request/providers/sample/sample.provider';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService, private readonly sampleApi: SampleApiProvider) {}
 
   @Get()
   getByIds(@Query('ids', new ParseArrayPipe({ items: Number, separator: ',' })) ids: number[]) {
@@ -21,8 +22,8 @@ export class AppController {
     return sampleBody;
   }
 
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number, @Query('sort', ParseBoolPipe) sort: boolean) {
-    return { id, sort };
+  @Get('post/:id')
+  findPost(@Param('id', ParseIntPipe) postId: number) {
+    return this.sampleApi.getPost(postId);
   }
 }
