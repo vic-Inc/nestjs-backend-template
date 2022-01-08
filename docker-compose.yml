@@ -3,6 +3,7 @@ version: '3.8'
 services:
   backend-app:
     image: backend-app:1.0.0
+    container_name: backend-app
     build:
       context: .
       target: production
@@ -13,9 +14,26 @@ services:
     networks:
       - application-network
     volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - .:/app
+    env_file:
+      - .env.dev
+    depends_on:
+      - app-mongo
     restart: unless-stopped
+  app-mongo:
+    image: 'mongo:4.4'
+    container_name: app-mongo
+    env_file:
+      - .env.dev
+    ports:
+      - 27018:27017
+    volumes:
+      - mongodb:/data/db
+      - mongodb_config:/data/configdb
 
 networks:
   application-network:
+
+volumes:
+  mongodb:
+  mongodb_config:

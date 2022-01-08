@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { environmentFilePaths } from './configurations.configs';
 import { ConfigurationsManager } from './configurations.manager';
+
+const getEnvironmentFileTag = () => (process.env.NODE_ENV === 'production' ? 'dev' : 'local');
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: environmentFilePaths,
+      envFilePath: `.env.${getEnvironmentFileTag()}`,
     }),
   ],
   providers: [ConfigurationsManager],

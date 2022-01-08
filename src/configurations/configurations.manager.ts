@@ -11,7 +11,12 @@ export class ConfigurationsManager {
 
   public get mongo() {
     return {
-      connectionString: process.env[variableNames.mongo.connectionString],
+      port: process.env[variableNames.mongo.port],
+      host: process.env[variableNames.mongo.host],
+      user: process.env[variableNames.mongo.user],
+      password: process.env[variableNames.mongo.password],
+      query: process.env[variableNames.mongo.query],
+      database: process.env[variableNames.mongo.database],
     };
   }
 }
