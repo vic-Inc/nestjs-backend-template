@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  backend-app:
+    image: backend-app:1.0.0
+    build:
+      context: .
+      target: production
+      dockerfile: ./Dockerfile
+    command: npm run start:prod
+    ports:
+      - 4000:4000
+    networks:
+      - application-network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+networks:
+  application-network:
