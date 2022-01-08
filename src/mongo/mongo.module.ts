@@ -5,9 +5,7 @@ import { ConfigurationsModule } from 'src/configurations/configurations.module';
 export const MongoModule = MongooseModule.forRootAsync({
   imports: [ConfigurationsModule],
   inject: [ConfigurationsManager],
-  useFactory: async ({
-    mongo: { query, user, password, port, host, database },
-  }: ConfigurationsManager) => {
+  useFactory: async ({ mongo: { query, user, password, port, host, database } }: ConfigurationsManager) => {
     const createDefaultConnectionString = () => {
       return `mongodb://${host}:${port}/${database}${query}`;
     };
@@ -17,14 +15,9 @@ export const MongoModule = MongooseModule.forRootAsync({
     };
 
     const createConnectionString = () => {
-      return (
-        user && password
-          ? createAuthConnectionString
-          : createDefaultConnectionString
-      )();
+      return (user && password ? createAuthConnectionString : createDefaultConnectionString)();
     };
 
-    console.log(createConnectionString());
     return { uri: createConnectionString() };
   },
 });
