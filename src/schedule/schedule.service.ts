@@ -1,23 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression, Interval } from '@nestjs/schedule';
-import { SampleTask } from './tasks/sample.task';
+import { UpdateCurrencyTask } from './tasks/update-currency.task';
 
 @Injectable()
 export class ScheduleService {
-  constructor(private readonly sampleTask: SampleTask) {}
+  constructor(private readonly updateCurrency: UpdateCurrencyTask) {}
 
-  @Cron('45 * * * * *')
-  public handleCron() {
-    this.sampleTask.execute();
+  @Cron(CronExpression.EVERY_8_HOURS)
+  public updateCurrencyConversions() {
+    this.updateCurrency.execute();
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
-  public handleCronExpression() {
-    this.sampleTask.execute();
-  }
-
-  @Interval(100000)
-  public handleTimeoutTask() {
-    this.sampleTask.execute();
-  }
+  // TODO: implement
+  @Cron(CronExpression.EVERY_9_HOURS)
+  public sendNotificationToUserIfCryptoIsAppropriate() {}
 }

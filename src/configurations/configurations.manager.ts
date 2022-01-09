@@ -19,4 +19,13 @@ export class ConfigurationsManager {
       database: process.env[variableNames.mongo.database],
     };
   }
+
+  public get currency() {
+    return {
+      endpoint: process.env[variableNames.currency.endpoint],
+      key: process.env[variableNames.currency.key],
+      conversions: process.env[variableNames.currency.conversions]?.split(','),
+      required: process.env[variableNames.currency.required]?.split(','),
+    };
+  }
 }

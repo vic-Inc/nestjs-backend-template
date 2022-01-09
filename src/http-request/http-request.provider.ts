@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Inject } from '@nestjs/common';
-import { AxiosResponse } from 'axios';
-import { Observable } from 'rxjs';
+import { AxiosRequestConfig, Method } from 'axios';
 import { HttpRequestHeadersBuilder } from './http-request-headers.builder';
 import { HttpRequestOptions } from './http-request.types';
 
@@ -10,30 +9,30 @@ export abstract class HttpRequestProvider {
 
   protected constructor(private readonly baseUrl: string) {}
 
-  protected get = <T>(path: string, options?: HttpRequestOptions) => {
-    const requestUrl = this.getRequestUrl(path);
-    return this.handleRequest<T>(this.http.get(requestUrl, { headers: options?.headers || this.defaultHeaders }));
+  protected get = <T>(path: string, options: HttpRequestOptions = {}) => {
+    return this.handleRequest<T>(this.getRequestObject(path, 'GET', options));
   };
 
-  protected post = <T>(path: string, options?: HttpRequestOptions) => {
-    const requestUrl = this.getRequestUrl(path);
-    return this.handleRequest<T>(this.http.post(requestUrl, options?.body, { headers: options?.headers || this.defaultHeaders }));
+  protected post = <T>(path: string, options: HttpRequestOptions = {}) => {
+    return this.handleRequest<T>(this.getRequestObject(path, 'POST', options));
   };
 
-  protected put = <T>(path: string, options?: HttpRequestOptions) => {
-    const requestUrl = this.getRequestUrl(path);
-    return this.handleRequest<T>(this.http.put(requestUrl, options?.body, { headers: options?.headers || this.defaultHeaders }));
+  protected put = <T>(path: string, options: HttpRequestOptions = {}) => {
+    return this.handleRequest<T>(this.getRequestObject(path, 'PUT', options));
   };
 
-  protected delete = <T>(path: string, options?: HttpRequestOptions) => {
-    const requestUrl = this.getRequestUrl(path);
-    return this.handleRequest<T>(this.http.delete(requestUrl, { headers: options?.headers || this.defaultHeaders }));
+  protected delete = <T>(path: string, options: HttpRequestOptions = {}) => {
+    return this.handleRequest<T>(this.getRequestObject(path, 'DELETE', options));
   };
 
-  private handleRequest = <T>(pendingRequest: Observable<AxiosResponse<T>>) => {
+  private handleRequest = <T>(requestObject: AxiosRequestConfig) => {
     return new Promise<T>((resolve) => {
-      pendingRequest.subscribe((response) => resolve(response.data));
+      this.http.request(requestObject).subscribe((response) => resolve(response.data));
     });
+  };
+
+  private getRequestObject = (path: string, method: Method, { headers, body, params }: HttpRequestOptions): AxiosRequestConfig => {
+    return { url: this.getRequestUrl(path), headers: headers || this.defaultHeaders, data: body, params, method };
   };
 
   private getRequestUrl = (path: string) => `${this.baseUrl}${path}`;

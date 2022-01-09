@@ -1,6 +1,11 @@
-import { HttpModule } from '@nestjs/axios';
+import { HttpModule, HttpService } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { SampleApiProvider } from './providers/sample/sample.provider';
+import { ConfigurationsModule } from 'src/configurations/configurations.module';
+import { CurrencyApiProvider } from './providers/currency/currency.provider';
 
-@Module({ imports: [HttpModule], exports: [SampleApiProvider], providers: [SampleApiProvider] })
+@Module({
+  imports: [HttpModule, ConfigurationsModule],
+  exports: [CurrencyApiProvider, HttpModule],
+  providers: [CurrencyApiProvider],
+})
 export class HttpRequestModule {}
