@@ -1,11 +1,11 @@
-FROM node:16-alpine3.11
+FROM node:14-alpine3.14
 
 WORKDIR /app
 
-COPY package*.json .
+COPY package.json /app/package.json
 
-RUN npm install --only=production
+RUN npm install
 
-COPY . .
+COPY . /app
 
 CMD ["node", "dist/main"]
